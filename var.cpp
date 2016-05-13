@@ -56,7 +56,7 @@ var& var::operator=(string a)
 
 var& var::operator+(const var &obj)
 {
-
+	var obj2 = *this;
 	if ((!obj.str.empty() && str.empty()) || (obj.str.empty() && !str.empty()))
 	{
 		if (obj.h != INT_MIN) str += to_string(obj.h);
@@ -82,14 +82,84 @@ var& var::operator+(const var &obj)
 		return *this;
 }
 
+var& var::operator/(const var &obj)
+{
+
+	
+	if ((!obj.str.empty() && str.empty()) || (obj.str.empty() && !str.empty()))
+	{
+		return *this;
+	}
+	else
+	{
+		cout << "var obj " << obj <<" d "<<d<<" h "<<obj.h<< endl;
+		if (obj.h != INT_MIN && h != INT_MIN)
+		{
+			d = h;
+			h = INT_MIN;
+			d /= obj.h;
+			cout << "d is " << d << endl;
+		}
+		else if (obj.d != DBL_MIN && d != DBL_MIN) d /= obj.d;
+		else  if (!obj.str.empty() && !str.empty());
+		else if (obj.h != INT_MIN && d != DBL_MIN) d /= obj.h;
+		else if (obj.d != DBL_MIN && h != INT_MIN)
+		{
+			d = h;
+			h = INT_MIN;
+			d /= obj.d;
+		}
+		else cout << "Uninitialized local variable" << endl;
+	}
+	return *this;
+}
+
 var& var::operator-(const var &obj)
 {
 
-	if (obj.h != INT_MIN && h != INT_MIN) h -= obj.h;
-	else if (obj.d != DBL_MIN && d != DBL_MIN) d -= obj.d;
-	else  if (!obj.str.empty() && !str.empty()) ;
-	else cout << "Uninitialized local variable" << endl;
+	if ((!obj.str.empty() && str.empty()) || (obj.str.empty() && !str.empty()))
+	{
+		return *this;
+	}
+	else
+	{
+		if (obj.h != INT_MIN && h != INT_MIN) h -= obj.h;
+		else if (obj.d != DBL_MIN && d != DBL_MIN) d -= obj.d;
+		else  if (!obj.str.empty() && !str.empty());
+		else if (obj.h != INT_MIN && d != DBL_MIN) d -= obj.h;
+		else if (obj.d != DBL_MIN && h != DBL_MIN)
+		{
+			d = h;
+			h = INT_MIN;
+			d -= obj.d;
+		}
+		else cout << "Uninitialized local variable" << endl;
+	}
+	return *this;
+}
 
+
+var& var::operator*(const var &obj)
+{
+
+	if ((!obj.str.empty() && str.empty()) || (obj.str.empty() && !str.empty()))
+	{
+		return *this;
+	}
+	else
+	{
+		if (obj.h != INT_MIN && h != INT_MIN) h *= obj.h;
+		else if (obj.d != DBL_MIN && d != DBL_MIN) d *= obj.d;
+		else  if (!obj.str.empty() && !str.empty());
+		else if (obj.h != INT_MIN && d != DBL_MIN) d *= obj.h;
+		else if (obj.d != DBL_MIN && h != DBL_MIN)
+		{
+			d = h;
+			h = INT_MIN;
+			d *= obj.d;
+		}
+		else cout << "Uninitialized local variable" << endl;
+	}
 	return *this;
 }
 

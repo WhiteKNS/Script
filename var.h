@@ -39,7 +39,13 @@ public:
 
 	var& operator+(const var &obj);
 
+	var& operator+(const var &obj, const var&obj2);
+
 	var& operator-(const var &obj);
+
+	var& var::operator*(const var &obj);
+
+	var& var::operator/(const var &obj);
 };
 
 
