@@ -10,11 +10,11 @@ int main()
 	var c = 12.3;
 	var str = " Hello, Kitty";
 	var g = a / b; //'a' store the result too...
-	cout << "/ " << g << endl;
+	cout << "/ " << g << endl; //true;
 
 	var result = a + b + c; //false because var 'a' store the result of (a+b). But how to do that?
 	
-	result = result + 5; 
-	cout <<"result "<< result << endl;
+	result = result + 5; //false;
+	cout <<"result "<< result << endl;//false;
 	return 0;
 }
