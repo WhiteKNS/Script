@@ -8,11 +8,14 @@ using namespace std;
 
 enum TYPE {BET_INT, BET_DOUBLE, BET_STRING};
 
+#pragma pack(push, 1)
+
 class var
 {
-	int h;
+	//int h;
 	double d;
-	string str;
+	char* str;
+
 
 	friend std::ostream& operator<<(std::ostream &os, const var& va);
 	friend std::istream& operator>>(std::istream &is, var& va);
@@ -21,29 +24,32 @@ class var
 
 public:
 
-	var() : str(""), h(INT_MIN), d(DBL_MIN) {}
-	var(int a) : h(a), d(DBL_MIN), str("") {}
-	var(double d) :d(d), h(INT_MIN), str("") {}
-	var(std::string str) :str(str), h(INT_MIN), d(DBL_MIN) {}
-	var(char* ch) : str(ch), h(INT_MIN), d(DBL_MIN) {}
-
+	var() : str(""), d(DBL_MIN) {}
+	var(double d) :d(d),  str("") {}
+	var(char* str) :str(str),  d(DBL_MIN) {}
+	
 	const char &at(const unsigned int &index);
 
 	var& operator=(int a);
 
 	var& operator=(double a);
 
-	var& operator=(string a);
+	var& operator=(char* a);
 
 	var& operator=(const var &obj);
-
+	
 	var& operator+(const var &obj);
 
+	var& operator+(const int &obj);
+
+	var& operator+(const double &obj);
+	/*
 	var& operator-(const var &obj);
 
 	var& var::operator*(const var &obj);
 
-	var& var::operator/(const var &obj);
+	var& var::operator/(const var &obj);*/
 };
 
 
+#pragma pack(pop)

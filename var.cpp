@@ -1,4 +1,3 @@
-
 #include "var.h"
 
 const int& var::TypeDetector(const string &str)
@@ -24,64 +23,162 @@ const int& var::TypeDetector(const string &str)
 
 const char& var::at(const unsigned int &index)
 {
-	if (index >= str.length()) return ' ';
-	return str.at(index);
+	unsigned int size = strlen(str);
+	unsigned int counter = 0;
+	char* str1 = str;
+	char ch;
+	if (index >= size) return ' ';
+
+	while (*str1)
+	{
+		if (counter == index)
+		{
+			ch = *str1;
+			break;
+		}
+		*str1++;
+		counter++;
+	}
+	return ch;
 }
 
 
 var& var::operator=(int a)
 {
-	h = a;
-	d = DBL_MIN;
-	str.clear();
+	d = a;
+	*str = NULL;
 	return *this;
 }
 
 var& var::operator=(double a)
 {
 	d = a;
-	h = INT_MIN;
-	str.clear();
+	*str = NULL;
 	return *this;
 }
 
-var& var::operator=(string a)
+var& var::operator=(char* a)
 {
-	str = a;
+	*str = *a;
 	d = DBL_MIN;
-	h = INT_MIN;
 	return *this;
 }
 
+
+var& var::operator=(const var &obj)
+{
+	this->d = obj.d;
+	this->str = obj.str;
+
+	return *this;
+
+}
+
+
+std::ostream& operator<<(std::ostream &os, const var& va)
+{
+	if (va.d != DBL_MIN) os << va.d;
+	else if (strlen(va.str) != 0)
+	{
+		os << va.str;
+	}
+	return os;
+}
+
+std::istream& operator>>(std::istream &is, var& va)
+{
+
+	string str;
+	is >> str;
+	int N = va.TypeDetector(str);
+
+	if (N == BET_DOUBLE||N==BET_INT)
+	{
+		va.d = atof(str.c_str());
+		va.str = NULL;
+	}
+	else
+	{
+		va.str = &str.at(0);
+
+		va.d = DBL_MIN;
+	}
+
+	return is;
+}
+
+var& var::operator+(const int &obj)
+{
+	//var obj2 = *this;
+	if ( strlen(str) != 0)
+	{
+			string str1 = str;
+			str1 += to_string(obj);
+			str = &str1.at(0);
+	}
+	else
+	{
+		d += obj;
+	}
+
+	return *this;
+}
+
+var& var::operator+(const double &obj)
+{
+	if (strlen(str) != 0)
+	{
+		string str1 = str;
+		str1 += to_string(obj);
+		str = &str1.at(0);
+	}
+	else
+	{
+		d += obj;
+	}
+
+	return *this;
+}
 
 var& var::operator+(const var &obj)
 {
-	var obj2 = *this;
-	if ((!obj.str.empty() && str.empty()) || (obj.str.empty() && !str.empty()))
+	var *obj2 = this;
+	if (((strlen(obj.str) != 0 && strlen(str)==0)) || ((strlen(obj.str) == 0 && strlen(str) != 0)))
 	{
-		if (obj.h != INT_MIN) str += to_string(obj.h);
+		
+		if (obj.d != DBL_MIN)
+		{
+			string str1 = str;
+			str1 += to_string(obj.d);
+			obj2->str = &str1.at(0);
+		}
 		else
-		if (obj.d != DBL_MIN) str += to_string(obj.d);
-		else str += obj.str;
+		{
+			string str1 = str;
+			str1 += obj.str;
+			obj2->str = &str1.at(0);
+		}
 		
 	}
 	else
 	{
-		if (obj.h != INT_MIN && h != INT_MIN) h += obj.h;
-		else if (obj.d != DBL_MIN && d != DBL_MIN) d += obj.d;
-		else  if (!obj.str.empty() && !str.empty())str += obj.str;
-		else if (obj.h != INT_MIN && d != DBL_MIN) d += obj.h;
-		else if (obj.d != DBL_MIN && h != DBL_MIN)
+		 if (obj.d != DBL_MIN && d != DBL_MIN) obj2->d += obj.d;
+		 else  if (strlen(obj.str) != 0 && strlen(str) != 0)
+		 {
+			 string str1 = str;
+			 str1 += obj.str;
+			 obj2->str = &str1.at(0);
+		 }
+		else if (obj.d != DBL_MIN)
 		{
-			d = h;
-			h = INT_MIN;
-			d += obj.d;
+			obj2->d += obj.d;
 		}
 		else cout << "Uninitialized local variable" << endl;
 	}
-		return *this;
+		return *obj2;
 }
 
+/*
 var& var::operator/(const var &obj)
 {
 
@@ -163,49 +260,6 @@ var& var::operator*(const var &obj)
 	return *this;
 }
 
-var& var::operator=(const var &obj)
-{
-	this->d = obj.d;
-	this->h = obj.h;
-	this->str = obj.str;
 
-	return *this;
 
-}
-
-std::ostream& operator<<(std::ostream &os, const var& va)
-{
-	if (va.h != INT_MIN) os << va.h;
-	else if (va.d != DBL_MIN) os << va.d;
-	else if (!va.str.empty()) os << va.str;
-	return os;
-}
-
-std::istream& operator>>(std::istream &is, var& va)
-{
-
-	string str;
-	is >> str;
-	int N = va.TypeDetector(str);
-
-	if (N == BET_INT)
-	{
-		va.h = atoi(str.c_str());
-		va.d = DBL_MIN;
-		va.str.clear();
-	}
-	else if (N == BET_DOUBLE)
-	{
-		va.d = atof(str.c_str());
-		va.h = INT_MIN;
-		va.str.clear();
-	}
-	else
-	{
-		va.str = str;
-		va.d = DBL_MIN;
-		va.h = INT_MIN;
-	}
-
-	return is;
-}
+*/
